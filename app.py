@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 import openai
 import googletrans
+import os
 
 app = Flask(__name__)
 
@@ -15,7 +16,7 @@ def index():
         text_to_translate = request.form['text_to_translate']
 
         # Call GPT-3 API
-        openai.api_key = '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'
+        openai.api_key = os.getenv('OPENAI_API_KEY')
         gpt3_translations = []
         for _ in range(3):
             response = openai.Completion.create(
