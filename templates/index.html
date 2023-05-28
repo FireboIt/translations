@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Add Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <!-- Add Select2 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+</head>
+<body>
+<div class="container">
+    <h2 class="my-3">Translation Form</h2>
+
+    <form action="/" method="post">
+        <div class="form-row">
+            <div class="form-group col-md-6 mb-2">
+                <label for="source_lang">Source Language:</label>
+                <select id="source_lang" name="source_lang" class="form-control select2">
+                    <option value="bengali" {% if source_lang == 'bengali' %} selected {% endif %}>Bengali</option>
+                    <option value="chinese" {% if source_lang == 'chinese' %} selected {% endif %}>Chinese</option>
+                    <option value="english" {% if source_lang == 'english' or not source_lang %} selected {% endif %}>English</option>
+                    <option value="french" {% if source_lang == 'french' %} selected {% endif %}>French</option>
+                    <option value="german" {% if source_lang == 'german' %} selected {% endif %}>German</option>
+                    <option value="gujarati" {% if source_lang == 'gujarati' %} selected {% endif %}>Gujarati</option>
+                    <option value="hindi" {% if source_lang == 'hindi' %} selected {% endif %}>Hindi</option>
+                    <option value="korean" {% if source_lang == 'korean' %} selected {% endif %}>Korean</option>
+                    <option value="marathi" {% if source_lang == 'marathi' %} selected {% endif %}>Marathi</option>
+                    <option value="spanish" {% if source_lang == 'spanish' %} selected {% endif %}>Spanish</option>
+                    <option value="tamil" {% if source_lang == 'tamil' %} selected {% endif %}>Tamil</option>
+                    <!-- Add more options as required -->
+                </select>
+            </div>
+            <div class="form-group col-md-6 mb-2">
+                <label for="target_lang">Target Language:</label>
+                <select id="target_lang" name="target_lang" class="form-control select2">
+                    <option value="bengali" {% if target_lang == 'bengali' %} selected {% endif %}>Bengali</option>
+                    <option value="chinese" {% if target_lang == 'chinese' %} selected {% endif %}>Chinese</option>
+                    <option value="english" {% if target_lang == 'english' %} selected {% endif %}>English</option>
+                    <option value="french" {% if target_lang == 'french' %} selected {% endif %}>French</option>
+                    <option value="german" {% if target_lang == 'german' %} selected {% endif %}>German</option>
+                    <option value="gujarati" {% if target_lang == 'gujarati' %} selected {% endif %}>Gujarati</option>
+                    <option value="hindi" {% if target_lang == 'hindi' %} selected {% endif %}>Hindi</option>
+                    <option value="korean" {% if target_lang == 'korean' or not source_lang %} selected {% endif %}>Korean</option>
+                    <option value="marathi" {% if target_lang == 'marathi' %} selected {% endif %}>Marathi</option>
+                    <option value="spanish" {% if target_lang == 'spanish' %} selected {% endif %}>Spanish</option>
+                    <option value="tamil" {% if target_lang == 'tamil' %} selected {% endif %}>Tamil</option>
+                    <!-- Add more options as required -->
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-9 mb-2">
+                <label for="text_to_translate">Text to Translate:</label>
+                <input type="text" id="text_to_translate" name="text_to_translate" class="form-control" value="{{ text_to_translate }}">
+            </div>
+            <div class="col-md-3 d-flex align-items-start">
+                <button type="submit" class="btn btn-primary w-100 mt-4">Submit</button>
+            </div>
+        </div>
+    </form>
+
+    {% if gpt3_translations %}
+    <h3 class="my-2">GPT-3 Translations:</h3>
+    {% for translation in gpt3_translations %}
+    <div class="row">
+        <div class="col-md-9">
+            <p id="trans{{ loop.index }}" class="border p-2">{{ translation }}</p>
+        </div>
+        <div class="col-md-3 d-flex align-items-center justify-content-center">
+            <button class="btn btn-primary" onclick="copyToClipboard('trans{{ loop.index }}')">Copy</button>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if google_translation %}
+    <h3 class="my-2">Google Translation:</h3>
+    <div class="row">
+        <div class="col-md-9">
+            <p id="google_trans" class="border p-2">{{ google_translation }}</p>
+        </div>
+        <div class="col-md-3 d-flex align-items-center justify-content-center">
+            <button class="btn btn-primary" onclick="copyToClipboard('google_trans')">Copy</button>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Add Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<!-- Add Select2 JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('.select2').select2();
+});
+
+function copyToClipboard(id) {
+        var text = document.getElementById(id).innerText;
+        var textarea = document.createElement("textarea");
+        textarea.textContent = text;
+        textarea.style.position = "fixed";  // Prevent scrolling to bottom of page in MS Edge.
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            return document.execCommand("copy");  // Security exception may be thrown by some browsers.
+        } catch (ex) {
+            console.warn("Copy to clipboard failed.", ex);
+            return false;
+        } finally {
+            document.body.removeChild(textarea);
+        }
+    }
+    </script>
+    
+
+</body>
+</html>
